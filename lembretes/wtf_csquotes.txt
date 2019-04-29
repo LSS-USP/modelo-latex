@@ -1,0 +1,19 @@
+csquotes:
+ - Usa automaticamente o tipo "certo" de aspas em função da língua
+ - Usa tipos diferentes de aspas em caso de aninhamento
+ - Lida automaticamente com pontuação, notas e citação ao final do texto (se vai dentro ou fora das aspas)
+ - decide automaticamente se a citação é inline ou display em função do tamanho
+
+Comandos:
+
+\enquote{blah} -> sõ coloca entre aspas, cuidando do nesting e estilo em função da língua
+
+\blockquote{blah} -> como o anterior, mas decide automaticamente se é inline ou display
+
+\textcquote[][p. 26]{fulano}{blah} -> igual a enquote + suporte a citação
+
+\blockcquote[][p. 26]{fulano}{blah} -> igual blockquote + suporte a citação
+
+\begin{displaycquote}[][p. 26]{fulano} -> blockquote sempre como display e com suporte a citação
+
+Caracteres válidos para active quotes: + = " | <> / e caracteres "esquisitos", como guillemets ou outros símbolos utf-8

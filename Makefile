@@ -380,6 +380,10 @@ distclean: $(addsuffix -distclean,$(ALL_TARGETS))
 	-@rm -f $*-timestamp latexmkrc-make missfont.log '$*.synctex(busy)' '$*.synctex.gz(busy)' \
 		mkidxhead.ist hyperxindy.xdy $*.checksums \
 		$*-latex-out.log $*-makeindex-out.log $*-bibtex-out.log \
+		comment_html.cut comment_print.cut html-print.txt lwarp.css \
+		lwarp.ist lwarp.xdy lwarp_formal.css lwarp_mathjax.txt \
+		lwarp_one_limage.txt lwarp_sagebrush.css sample_project.css \
+		$*-images.txt $*-images/* $*.html $*.lwarpmkconf $*_html.* \
 		$(TEX_TEMP_FILES) \
 		$(foreach ext,$(TMP_EXTENSIONS),$*.$(ext)) \
 		$(foreach ext,$(FLS_TMP_EXTENSIONS),$*.$(ext))

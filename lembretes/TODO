@@ -1,0 +1,281 @@
+a branch smallcaps (ou será só na tese da Sylvia?) está usando enumitem e isso está fazendo sumir os bullets do beamer...
+
+alguma dessas também não está funcionando nota de rodapé no título, embora titlesec supostamente pemita
+
+testar criticaledition com artigo
+
+texlive 2019 a fonte do pseudocódigo ("FUNCTION") não está bold
+
+no beamer, os triângulos estão grandes demais (acho que muda em função da versão do latex)
+
+
+\vspace é o que funciona em modo horizontal; ele insere um espaço após alinha atual. Então, \\[1cm] é equivalente a \vspace{1cm}\newline
+o headheight da tese deveria ser 34pt
+\nolinebreak e \nopagebreak são similares a \linebreak \pagebreak
+quotation usa parindent, quote usa parskip
+pacote textpos
+center X centering
+
+Capa - Talvez mexer o "tese apresentada..." para a direita, como
+no meu mestrado
+
+Lembrar disto: https://tex.stackexchange.com/questions/12175/biblatex-submitting-to-a-journal
+
+Ver se tem algo de html_export que deve ser migrado para master
+
+juntar a versão titleps e fancyhdr numa só e ter opção para escolher
+esta ou aquela técnica
+
+Vale a pena eliminar "verse" e sempre usar "stanza"? -> precisa ver
+se stanza funciona com lwarp...
+
+==== LWARP ====
+
+funciona tanto lualatex quanto pdflatex igual (ou não, em algum momento
+notei diferenças mas não lembro mais).
+
+ver "special cases and limitations" na documentação
+
+ver o que dá para recuperar das coisas que eu comentei
+
+Não sei o que é e o que não é importado corretamente pelo
+libreoffice/word (porque tem coisas que ele faz com css, não sei
+se o libreoffice/word aplica tudo).
+
+*** misc: ***
+
+lwarpmk carrega a package xpatch, que é incompatível com regexpatch,
+então criei uma xpatch.sty falsa.
+
+Fórmulas matemáticas com mathjax dão problema com acentos; com lua
+vai mas fica bem feio. Será que mudando a fonte matemática para a
+que era antes fica melhor?
+
+lwarpmk limages com TeXLive 2019 reclama que a compilação não
+terminou; o problema é que ele deveria escrever "|end|end|end|" na
+última linha do arquivo tese-exemplo-images.txt e não está fazendo.
+
+A imagem girada não fica girada
+
+reledpar tem que usar lateximage; sem lateximage, tem que ver o que dá
+para fazer (está dando um erro relacionado a minipages)
+
+o \addtocontents em tese-exemplo.tex causa um erro.
+
+*** Links: ***
+
+lwarp exporta a bibliografia, mas não com links; ele também coloca
+os backrefs com números de página, o que não faz sentido (e também
+não são links). Será que dá para melhorar?
+
+lwarp não exporta as notas de rodapé de um jeito bom, mas dei um
+truque para fazer hyperlinks e para funcionar no pandoc.
+
+urls que têm "\" para escapar alguma coisa ficam erradas (a barra
+permanece)
+
+pageref criou "page for blah", onde blah é um texto errado mas o link
+está correto
+
+*** listings e verbatim: ***
+
+A descrição do pseudocode está cheia de quebras de linha, provavelmente
+é o listings inline que está zoado.
+
+Não rola text formatting do listings (está na documentação de lwarp que
+por enquanto não tem suporte) e, como ele usa a opção "literate" para
+substituir coisas como "&", "<" e ">" no HTML, os comandos "espertos"
+que eu criei para o listings também não funcionam.
+
+A numeração de linhas do listings e a indentação dão problema, como
+descrito em lwarp-overrides.sty
+
+Aparentemente, listings e verbatim não funcionam com lateximage, mas
+precisa investigar melhor isso (a documentação não diz nada). Talvez
+colocar em uma minipage?
+
+*** tabelas ***
+
+longtable está meio zoada, a tabela em forma de ficha também e as
+tabelas com cabeçalhos inclinados também.
+
+makecell: tentar criar lwarp-makecell, ver se minipage ou savebox
+dá para resolver (e ver se com linebreak ou newline também) - acho
+que este item se refere ao cabeçalho "nome completo" da tabela
+inclinada que aparece zoado no HTML e no pdf gerado com lualatex.
+
+==== PANDOC ====
+
+pandoc exporta as notas de rodapé mas não faz a bibliografia com
+biblatex, e pelo jeito ele não sabe fazer nada com hyperlinks ao
+converter para word (precisa confirmar isso). Tem o problema
+do \textde, mas é fácil de resolver, só precisa ficar esperto
+para garantir que *todos* os comandos desse tipo são tratados.
+É uma solução mais ad-hoc.
+
+
+
+pandoc -t docx -o teste.docx conteudo/capitulos.tex --bibliography=bibliografia.bib
+
+Talvez dê para usar o jq como filtro do pandoc para acertar o que for necessário, ou usar o gpp
+
+gpp -T --include gpp-pandoc.txt blah.tex -> solução para o \textde
+
+============================================================================
+CAPA E FOLHA DE ROSTO (Sylvia):
+
+capa:
+
+Universidade de São Paulo
+Faculdade de Filosofia, Letras e Ciências Humanas
+Departamento de Teoria Literária e Literatura Comparada
+
+Sylvia Tamie Anan
+
+Título: subtítulo
+
+São Paulo, 2018
+
+---
+Rosto:
+
+Sylvia Tamie Anan
+
+Título: subtítulo
+
+versão original ou corrigida
+
+natureza: tipo do trabalho (dissertação ou tese) e objetivo (aprovação 
+em disciplina, grau pretendido e outros); nome da instituição a que é 
+submetido; área de concentração; 
+
+nome do orientador e co-orientador
+
+opções para tudo isso:
+
+    Tese apresentada à Faculdade de
+    Filosofia, Letras e Ciências
+    Humanas da Universidade de São
+    Paulo, para obtenção do título de
+    Doutor em Teoria Literária e
+    Literatura Comparada
+
+    Área de Concentração: Teoria
+    Literária e Literatura Comparada
+
+    Orientadora: Profa. Dra Adélia
+    Toledo Bezerra de Meneses
+
+---
+
+    Dissertação de Mestrado apresentada ao
+    Programa de Pós-graduação em Teoria
+    Literária e Literatura Comparada da Faculdade
+    de Filosofia, Letras e Ciências Humanas da
+    Universidade de São Paulo, sob orientação do
+    Prof. Dr. Joaquim Alves de Aguiar.
+
+---
+
+    Dissertação apresentada ao Programa de Pós-
+    Graduação em Teoria Literária e Literatura
+    Comparada da Faculdade de Filosofia, Letras
+    e Ciências Humanas para a obtenção de título
+    de mestre.
+
+    Orientadora: Prof.a Dr.a Marta Kawano
+
+---
+
+    Dissertação apresentada ao programa de
+    Pós-Graduação do Departamento de Teoria
+    Literária e Literatura Comparada da
+    Faculdade de Filosofia, Letras e Ciências
+    Humanas da Universidade de São Paulo,
+    para obtenção do título de Mestre em Letras.
+
+    Orientadora: Profa Dra Marta Kawano
+
+---
+
+    Dissertação apresentada ao Programa de Pós-Graduação
+    em Teoria Literária e Literatura Comparada, do
+    Departamento de Teoria Literária e Literatura
+    Comparada – USP, para a obtenção do título de Mestre
+    em Letras.
+
+    Orientador: Roberto Zular
+
+---
+
+    Tese apresentada ao programa de pós-
+    graduação do Departamento de Teoria
+    Literária e Literatura Comparada da
+    Faculdade de Filosofia, Letras e Ciências
+    Humanas da Universidade de São Paulo
+    como requisito para a obtenção do título
+    de Doutor em Letras.
+
+    Orientador: Prof. Dr. Roberto Zular
+
+---
+
+    Dissertação apresentada ao Programa de Pós-Graduação do
+    departamento de Teoria Literária e Literatura Comparada da
+    Faculdade de Filosofia, Letras e Ciências Humanas da
+    Universidade de São Paulo, sob a orientação da Profa. Dra.
+    Marta Kawano, como parte dos requisitos para a obtenção
+    do título de Mestre em Teoria Literária e Literatura
+    Comparada.
+
+---
+
+    Na minha opinião, todos estão péssimos... Teria que ser
+    Tese apresentada ao Departamento de Teoria Literária e
+    Literatura Comparada da Faculdade de Filofia, Letras e
+    Ciências Humanas da Universidade de São Paulo para
+    obtenção do título de Doutora em blah. O "como parte
+    dos requisitos" não consta da norma e muita gente não
+    põe; acho que é comum em outros lugares.
+
+    Área de concentração: Teoria Literária e Literatura Comparada
+
+    Orientadora: Profª. Drª. Marta Kawano
+
+São Paulo, 2018
+
+----
+documentação:
+
+maketitle (e \thanks e \date)
+abstract
+\chapter[nome-curto]{nome longo} -> serve também para caption -> atenção às notas de rodapé ou refs bibliográficas
+comandos frágeis
+font size, shape, weight; NFSS
+pagestyle
+estilo de numeração de páginas (\pagenumbering{arabic/roman/Roman/alph/Alph})
+counters
+parskip, parindent, baselinestretch, indent, noindent, package parskip
+1 polegada de deslocamento horizontal/vertical
+espaço simples/duplo
+abstract/apêndice
+toc
+personalização de listas, trivlist
+tabelas e booktabs
+detalhes de figuras, subfiguras, captions
+epígrafes e versos
+fancyhdr
+cores
+beamer
+bibtex/biblatex
+caracteres especiais (%, _, $, #, &, ~, ^, {, })
+pegadinhas com espaços
+escopo e grupos
+rubber lengths, fills e a pegadinha do "plus" depois de um comando
+texto inteiro em colunas X package multicolumn
+\addcontentsline
+sloppy/fussy
+teoremas
+tabbing
+boxes
+package tcolorbox X fancybox

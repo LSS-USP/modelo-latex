@@ -206,7 +206,7 @@ sítio \url{www.tablesgenerator.com}.}; Um exemplo simples é a Tabela~\ref{tab:
     \centering
     \begin{tabular}{ccl}
       \toprule
-      Código      & Abreviatura  & \makecell{Nome\\completo} \\
+      Código      & Abreviatura  & \makecell{Nome\newline completo} \\
       \midrule
       \texttt{A}  & Ala          & Alanina \\
       \texttt{C}  & Cys          & Cisteína \\
@@ -222,7 +222,7 @@ sítio \url{www.tablesgenerator.com}.}; Um exemplo simples é a Tabela~\ref{tab:
   \begin{subtable}[b]{0.37\textwidth}
     \centering
     \begin{tabular}{ccl}
-      \rothead{Código} & \rothead{Abreviatura} & \rothead{Nome\\completo} \\
+      \rothead{Código} & \rothead{Abreviatura} & \rothead{Nome\newline completo} \\
       \midrule
       \texttt{A}       & Ala                   & Alanina \\
       \texttt{C}       & Cys                   & Cisteína \\
@@ -286,6 +286,8 @@ começar em uma página em modo paisagem.}.
 
 \endfirsthead % Final do cabeçalho que aparece na primeira página
 
+\warpprintonly{
+
 %%%%%%%%%%%%
 % O cabeçalho da tabela em todas as páginas em que ela aparece
 % exceto a primeira; aqui, igual ao anterior
@@ -308,6 +310,9 @@ começar em uma página em modo paisagem.}.
 
 \endhead % Final do cabeçalho das páginas seguintes à primeira
 
+}
+
+\warpprintonly{
 %%%%%%%%%%%%
 % O rodapé da tabela em todas as páginas em que ela aparece
 % exceto a última
@@ -319,9 +324,11 @@ começar em uma página em modo paisagem.}.
 \hline
 
 % Como usamos \captionlistentry mais acima, usamos "[]" aqui.
-\caption[]{Exemplo de tabela com valores numéricos.}
+\caption[]{Exemplo de tabela com valores numéricos.}\\
 
 \endfoot % Final do rodapé que aparece em todas as páginas exceto a última
+
+}
 
 %%%%%%%%%%%%
 % O rodapé da tabela na última página em que ela aparece
@@ -329,9 +336,9 @@ começar em uma página em modo paisagem.}.
 \hline
 
 % Como usamos \captionlistentry mais acima, usamos "[]" aqui.
-\caption[]{Exemplo de tabela com valores numéricos.}
+\caption[]{Exemplo de tabela com valores numéricos.}\\
 
-\endlastfoot % Final do rodapé da última página
+\warpprintonly{\endlastfoot} % Final do rodapé da última página
 
 %%%%%%%%%%%%
 % O conteúdo da tabela de fato.

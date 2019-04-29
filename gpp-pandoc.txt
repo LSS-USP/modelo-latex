@@ -1,0 +1,5 @@
+\define{\textde{x}}{\x}
+\define{\texten{x}}{\x}
+\define{\textes{x}}{\x}
+\define{\textbr{x}}{\x}
+\define{\textfr{x}}{\x}

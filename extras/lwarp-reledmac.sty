@@ -1,0 +1,16 @@
+\let\tmpendminipage\endminipage
+
+\renewcommand{\endminipage}{\relax\footnoterule\relax\@minipagefalse}
+
+\LWR@ProvidesPackagePass{reledmac}[2019/02/22 v2.31.0 typesetting critical editions]
+
+\let\endminipage\tmpendminipage
+
+\xapptocmd%
+  {\endminipage}%
+  {\l@advance@parledgroup@beforenormalnotes\l@dfeetendmini}%
+  {}%
+  {\led@error@fail@patch@endminipage}
+
+% For some reason, reledmac redefines this; let's take it back
+\RenewDocumentCommand{\pagenumbering}{s m}{}

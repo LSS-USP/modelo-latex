@@ -1,0 +1,217 @@
+#HTML5 + CSS
+
+  Funciona muito bem no browser, mas o problema é gerar a versão pdf.
+
+  Os recursos de CSS para paged media parecem MUITO bons (mais sobre
+  isso mais abaixo), mas os browsers ainda não implementam direito. Tem
+  três ferramentas fechadas que todo mundo usa: prince, antenna house e
+  pdfreactor. Abertas tem wkhtmltopdf e wkhtml2pdf (elas usam o webkit,
+  então é a mesma coisa que o browser) e weasyprint, que parece um pouco
+  melhor. Essa última parece que até chupa algumas coisas do browser mas
+  o grosso da implementação é da própria ferramenta, então vai saber
+  como fica a manutenção desse código... o certo era o browser funcionar!
+
+  Para compensar essa limitação dos browsers, tem o paged.js, que é um
+  "polyfill" javascript para paged media. O site é www.pagedmedia.org,
+  bem interessante com vários links relacionados; parece que é financiado
+  pelo Shuttelworth. Tem também o https://paged.design que tem uns
+  templates pré-prontos compatíveis com o paged.js mas parece que tudo
+  ainda é bem alfa/beta.
+
+  Escrever tudo "na unha" é embaçado, e é aí que entra o vivliostyle:
+  ele também tem um polyfill para paged media mas, pelo que entendi,
+  inclui outras coisas, como uns modelos pré-prontos para facilitar a
+  produção de livros e um visualizador no browser que fica bem com cara
+  de e-book. Originalmente era uma empresa mas a empresa foi para outro
+  lado, vai saber o futuro do projeto...
+
+#asciidoctor
+
+  É uma linguagem que, pelo que entendi, é um subset de DocBook e é bem
+  "fixa" nos tipos (LaTeX também é bem fixo, mas é extensível/programável;
+  asciidoctor creio que tem mais coisas por padrão mas acabou ali). Ou talvez
+  não seja tão fixa?! A documentação de asciidoc diz que é altamente
+  customizável; como asciidoctor é um descendente, deveria ser também...
+  Enfim, ela é focada em converter para DocBook ou para HTML5+CSS (parece que
+  fica muito bom). Mas para gerar pdf é meio bosta:
+
+  -> asciidoctor-pdf
+    É uma conversão direta que tem estilos similares a CSS. Parece bem legal,
+    mas obviamente não tem as "espertezas" do LaTeX quanto a quebra de
+    parágrafos e de páginas, matemática, addvspace... É o mecanismo
+    recomendado pelo projeto para gerar pdf. Por outro lado, talvez seja
+    bem promissor se for acrescentando os recursos.
+
+  -> asciidoctor-latex
+    Meio óbvio :) mas creio que não tem nenhum controle sobre o layout,
+    só gera comandos LaTeX e pronto.
+
+  -> asciidoctor-docbook
+    Gera docbook e, a partir dele, usa a ferramenta a2x (parte do projeto
+    asciidoc) para converter para pdf de duas formas:
+      -> XSL-FO + apache-fop
+        XSL-FO É um formato XML voltado para impressão, então dá para
+        converter para pdf sem muita dor. Docbook -> xsl-fo é uma conversão
+        "padrão" com XSLT; essa conversão XSLT pode acrescentar TOC, refs,
+        índices etc. Depois precisa passar para pdf com uma ferramenta que
+        entenda esse formato, como apache-fop. Mas parece que o resultado
+        não é grande coisa (suponho que pelas mesmas limitações de
+        asciidoctor-pdf)
+      -> dblatex
+        Meio óbvio :) creio que também não tem nenhum controle sobre o
+        layout, só gera comandos LaTeX (com uma package .sty associada
+        que pode ser customizada).
+
+    -> pandoc
+      tem um conversor docbook -> latex (ou pdf, passando por latex)
+
+  -> asciidoctor-fopub
+    xsl-fo usando apache-fop, mas sem passar pelo a2x.
+
+  -> asciidoctor-htmlbook
+    Converte para htmlbook (da O'Reilly). htmlbook é um subset de xhtml5;
+    basicamente, usa as tags do html e acrescenta atributos "data-type":
+    "data-type=appendix", "data-type=chapter", "data-type=bibliography" etc.
+    A graça é que dá para usar CSS, claro. Mas pelo jeito, no fluxo da
+    O'Reilly eles usam alguma ferramenta fechada (antenna house ou prince
+    XML) para converter para pdf; teria que explorar o weasyprint, talvez
+    junto com o paged.js.
+
+  -> EPUB3
+
+#bookdown (bookdown.org)
+
+  É uma outra linguagem de markup no espírito do asciidoc mas nada a ver
+  com docbook e baseada no R. Acho que ela é mais legal que asciidoctor.
+
+  Em HTML, ela gera "livros" baseados em três templates: gitbook, tufte
+  e bootstrap (mas é possível customizar, claro). Para gerar PDF ela usa
+  o LaTeX (via pandoc) e qualquer customização é por sua conta.
+
+  As vantagens:
+   * O dialeto markdown usado é *muito* rico e bem voltado para a coisa
+     acadêmica: crossrefs, captions, modo matemático etc.
+   * Formata código-fonte automaticamente
+   * Permite executar os trechos de código-fonte e incluir também o
+     resultado do processamento
+   * Permite incluir comandos do LaTeX (mas aí só funciona ao gerar PDF,
+     claro, não com HTML)
+
+  Não sei o quanto é ou deixa de ser extensível e não utiliza os recursos
+  do CSS na versão LaTeX, então as únicas vantagens são (1) usar a sintaxe
+  mais "enxuta" do markdown, (2) poder gerar HTML e PDF com o mesmo fonte
+  e (3) poder incluir o resultado de computações no documento. MAAAAAS se
+  um dia tivermos um bom conversor html/css -> pdf...
+
+#reStructuredText e sphinx (http://www.sphinx-doc.org/en/master/)
+
+Mesma ideia do bookdown e asciidoc. É a ferramenta que está na base do
+readthedocs.org. A linguagem de markup é "reStructuredText", que
+supostamente é lindamaravilhosa porque é extensível, mas em compensação
+é um pouco feinha e prolixa. Para gerar PDF usa LaTeX, como sempre...
+tem várias extensões escritas em python, sei lá o que elas fazem, mas
+a ideia de ter um lance que a linguagem de markup é extensível e tem
+como associar código é o barato.
+
+#texinfo
+
+  a conversão para web deve ser menos sofisticada que asciidoctor, mas a
+  conversão para pdf usa o TeX e deve ficar muito boa. Tem como converter
+  de/para docbook também, então talvez até dê para passar de asciidoctor
+  para texinfo para impressão...
+
+#context
+
+----
+MathML -> XML para descrever equações. Útil porque tem aquela coisa de "meaning X presentation", mas os browsers abandonaram.
+
+ASCIIMath ->  baseado no modo matemático do TeX, permite mostrar equações matemáticas no browser. É uma biblioteca javascript que converte para MathML e o browser ou um plugin converte para a apresentação, aí pode aplicar CSS. Hoje está embutido no MathJAX, então não tem muito sentido usar separadamente.
+
+MathJAX -> biblioteca javascript que aceita MathML, TeX e ASCIIMath como entrada e pode produzir HTML+CSS+webfonts, SVG ou MathML na saída para apresentar equações no browser. É um projeto da AMS e parece muito bom.
+
+KaTeX -> projeto da Khan Academy similar ao MathJAX mas que é mais simples e mais rápido, não saquei como ele funciona nem se tem grandes vantagens além da velocidade.
+
+mtex2MML -> conversor TeX -> MathML baseado em bison
+mathematical (https://github.com/gjtorikian/mathematical) -> baseado no mtex2MML, conversor TeX -> SVG/PNG/MathML.
+
+plastex: http://plastex.github.io/plastex/ -> um "interpretador TeX" parcial escrito em python que pode exportar para HTML, docbook etc.
+
+----
+Explicação importante sobre LaTeX3: https://tex.stackexchange.com/a/118015
+
+===================
+
+HTML5 + CSS (e + javascript!) tem algumas coisas legais:
+ * São padrões que vão ter suporte por muitas décadas
+ * São padrões bem conhecidos, então muita gente sabe customizar
+ * Os browsers vão ficar cada vez melhores
+ * Dá para aproveitar recursos do javascript
+
+Ver: https://print-css.rocks , é um tutorial de como fazer paged media
+com css que aborda números de páginas etc.
+
+Mas escrever em HTML é besta; é aí que entram asciidoc e bookdown. Acho
+que dá para estendê-los (incluindo coisas de javascript) para fazer um
+negócio BEEEEEM legal!
+
+LATEX X ASCIIDOC/BOOKDOWN:
+
+Tanto LaTeX quanto asciidoc/bookdown são linguagens declarativas. Os
+três têm modo matemático e podem gerir bibliografias/citações
+automaticamente.
+
+Para coisas simples, asciidoc/bookdown têm algumas vantagens:
+
+ * linguagem mais concisa
+ * exporta para html+css, então é fácil customizar
+ * dá para usar mathjax e knuth-plass com javascript
+ * tem suporte a bibliografias com CSL
+ * sabe gerar TOC (acho)
+ * CSS é bem poderoso e permite definir regras em função do "contexto" ("isto é um parágrafo dentro de um itemize dentro de um quote")
+
+TeX são duas coisas:
+1. Typesetting:
+  * Parágrafos: quebras de linha, Knuth-Plass, hifenização
+  * Páginas: vertical glue, viúvas/órfas, cabeçalhos/rodapés, pares/ímpares, topskip, flushbottom, grid typesetting
+  * Floats: imagens, tabelas, notas de rodapé, notas de margem
+  * Microtype
+  * Modo matemático
+2. Processamento de macros:
+  * Crossrefs, TOC, índice remissivo, citações/bibliografia
+  * Nomes automáticos ("bibliografia", "seção") e hifenização na língua correta
+  * Auto-ajustes no texto, como:
+    - espaço antes do ponto no francês
+    - csquotes
+    - ajustes de tamanho como tabularx/tabulary e o balanceamento de multicols
+    - alinhamento de tabelas no ponto decimal
+    - alinhamento de fórmulas no "="
+    - listings
+  * Comandos especiais, como reledmac/reledpar e tikz (ex: gantt charts)
+  * Ajustes manuais (enlargethispage, vspace, looseness...)
+
+Limitações do asciidoc/bookdown em comparação com LaTeX:
+ * Não tem knuth-plass nem hifenização boa, mas com javascript tem
+ * Não tem como definir múltiplas línguas para nomes automáticos e hifenização, mas css tem
+ * Acho que não tem multicols pré-definido, mas daria para implementar fácil com css
+ * Não tem TODO notes, daria para implementar com algum trabalho
+ * Não tem suporte decente para paginação:
+   - Acho que não tem customização de cabeçalhos/rodapés, mas css tem
+   - Acho que não tem glue vertical nem controle manual das quebras, mas talvez dê com javascript
+   - Não tem páginas pares X ímpares, mas css tem
+   - Não tem grid typesetting, mas talvez dê com javascript
+   - Não tem notas de rodapé, mas css tem
+   - Não tem floats, imagens/tabelas vão ficar uma zona na impressão (talvez css ajude um pouco, talvez javascript ajude também)
+ * Não vai fazer a coisa certa com topskip (será que é importante? Será que tem como resolver com javascript?)
+ * biblatex é mais poderoso que CSL (mas foda-se)
+ * Acho que não tem índice remissivo, mas deve dar para fazer com javascript
+ * Não tem auto-ajustes no texto, mas deve dar para fazer com javascript
+   - mas faz tabularx/tabulary e o balanceamento de multicols automaticamente
+   - tem um modo para código-fonte
+ * Comandos especiais dá com javascript
+ * Ajustes manuais, talvez com javascript
+ * Talvez não dê para fazer alguns recursos avançados de tcolorbox (mas com javascript deve dar sim)
+
+Outra coisa que seria legal é um programa que pega um CSS e gera os
+comandos/ambientes LaTeX correspondentes. Aí ficaria mais fácil
+criar estilos "completos" em LaTeX. A ideia de fazer um conversor
+de CSL para biblatex vai na mesma linha.

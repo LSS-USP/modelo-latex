@@ -1,0 +1,18 @@
+Oi,
+
+Fiz mais alguns testes de desempenho do modelo LaTeX. Como está ele compila em 16.3s; tirando praticamente tudo (inclusive bibliografia), passa para 1.8s. Colocando várias packages pequenas, o tempo passa para 2.6 segundos que, a meu ver, não faz muita diferença (até porque acho que esse tempo é O(1)). As packages que fazem mais diferença são:
+
+ * Capa: acrescenta 0.7s, deve ser O(1)
+ * fontes diferentes da padrão: acrescenta 1.5s, deve ser O(1)
+ * microtype: acrescenta 1s, deve ser O(n)
+ * Geração do índice remissivo: acrescenta 1.6s, deve ser O(n)
+ * Geração de hyperrefs: acrescenta 0.8s, deve ser O(n)
+
+E a campeã:
+
+ * Geração de bibliografia com biblatex: acrescenta 7s, deve ser O(n)
+
+Usando bibtex no lugar do biblatex, o acréscimo cai para 0.5s, ou seja, biblatex realmente é BEM lento. Testei com a tese de um aluno, biblatex demorou 30s a mais que bibtex.
+
+Quanto às cinco primeiras, acho que não faz muito sentido tentar tirar para ganhar alguns poucos segundos, mesmo em um documento grande. biblatex é mais difícil de defender, mas ainda assim acho que vale a pena porque é um sistema melhor mesmo que bibtex e, aos poucos, a comunidade está migrando para ele.
+

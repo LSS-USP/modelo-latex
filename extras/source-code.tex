@@ -25,10 +25,30 @@
 \lstloadaspects{simulatex,invisibledelims,pseudocode}
 \lstloadlanguages{[base]pseudocode,[english]pseudocode,[brazilian]pseudocode}
 
+% lwarp sobreescreve o que foi definido em literate; aqui,
+% modificamos para manter os valores anteriores e apenas
+% acrescentar as novas substituições. Não dá para fazer
+% isto em outro arquivo porque utilizamos o comando aqui mesmo.
+\makeatletter
+\warpHTMLonly{
+\def\lstset@#1{\endgroup%
+\ifx\@empty#1\@empty\else\setkeys{lst}{#1}\fi%
+\providecommand{\lst@literate}{}%
+        \edef\lst@literate{%
+                \expandonce\lst@literate%
+                {<}{\noexpand\HTMLentity{lt}}{4}%
+                {>}{\noexpand\HTMLentity{gt}}{4}%
+                {\&}{\noexpand\HTMLentity{amp}}{5}%
+        }%
+}
+}
+\makeatother
+
 % O pacote listings não lida bem com acentos! No caso dos caracteres acentuados
 % usados em português é possível contornar o problema com a tabela abaixo.
 % From https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings#Encoding_issue
 \lstset{literate=
+  {<}{{\textless{}}}1 {>}{{\textgreater{}}}1 {&}{{\&{}}}1
   {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
   {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
   {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1

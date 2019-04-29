@@ -1,0 +1,69 @@
+\makeatletter
+
+% O comando precisa existir para podermos fazer \renewcommand; como
+% \poemtitle é definido por titlesec e lwarp desabilita todos os
+% comandos de titlesec, precisamos fazer o comando existir.
+%\providecommand{\poemtitle}{\relax}
+%\renewcommand{\poemtitle}{\@ifstar{\realpoemtitle}{\realpoemtitle}}
+
+%\newcommand{\realpoemtitle}[1]{\hspace{1.5em}\textbf{#1}\par\vspace{\parskip}}
+%\renewcommand{\poemlist}[1]{\relax}
+
+% lwarp's microtype emulation does something weird with this command;
+% we cannot load lwarp-letterspace because it clashes with microtype;
+% so, we just correct this here.
+\DeclareDocumentCommand{\textls}{o +m}{#2}
+
+\newlength\MKwidth%
+\newlength\MKheight%
+\renewcommand{\makecell}[2][]{%
+\settowidth{\MKwidth}{#2}%
+\parbox[#1]{\MKwidth}{#2}%
+}
+
+% listings: lwarp faz parskip=0, mas isso faz a primeira linha
+% (onde vai o <pre>) ser escrita em cima da primeira linha do programa
+% no pdf; com isso, o texto é extraído erroneamente. Aqui, acrescentamos
+% uma linha
+\xpatchcmd{\LWR@atbeginverbatim}{\LWR@orignewline}{\LWR@orignewline\LWR@orignewline}{}{}
+
+% lwarp insere quebras de linha ao longo do texto (html) gerado para
+% garantir que não haja overflow na vertical. Normalmente isso não é
+% um problema, mas com verbatim (e, portanto, com listings), pode
+% acontecer isto:
+%
+% <pre>
+%     linha 1
+% ----> quebra de página
+%     linha 2
+% ----> quebra de página
+%     linha 3
+% </pre>
+%
+% O problema é que, na segunda página, não há nada impresso além da
+% linha 2; por conta disso, pdftotext não "percebe" que essa linha
+% está indentada, o que faz código-fonte com listings aparecer com
+% erros de indentação. O certo seria sempre "gobble" os espaços,
+% mas aparentemente a reimplementação de lwarp para listings
+% ignora esse parâmetro. Então, não sei como resolver isso.
+
+% Outro problema com listings é que a numeração das linhas de
+% código processa não as linhas de entrada, mas as linhas de
+% saída, ou seja, o código html. Como esse código inclui alguns
+% comentários (<!-- ... -->), há linhas a mais, gerando números
+% errados. Para piorar, alguns desses números ficam dentro do
+% comentário html, então o resultado visual é que há "pulos"
+% nos números de linha. Também não sei como resolver, mas nem
+% comecei a olhar as possibilidades.
+
+% Não precisamos de ruledcaption; aqui, fazemos o comando simplesmente
+% chamar o float program.
+\renewenvironment{ruledcaption}[2][]{
+    \begin{program}
+        \ifstrempty{#1}
+            {\caption{#2}}%
+            {\caption[#1]{#2}}%
+}
+{\end{program}}
+
+\makeatother

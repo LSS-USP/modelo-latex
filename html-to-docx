@@ -1,0 +1,25 @@
+#!/bin/bash
+
+markdownify_footnote_tags() {
+  # Converte os ids html das notas de rodapé e os
+  # hyperlinks html para elas em tags markdown.
+  sed -E -z \
+    -e 's;<a[[:space:]\n]+id="LWR-ht-fn.(([0-9]+|[A-Za-z])-[0-9]+)"></a>;[^LWR-ht-fn.\1]:;g' \
+    -e 's;<a[[:space:]\n]+href="tese-exemplo.html#LWR-ht-fn.(([0-9]+|[A-Za-z])-[0-9]+)"><sup>[0-9]+</sup></a>;[^LWR-ht-fn.\1];g'
+}
+
+erase_footnote_backrefs() {
+  # remove as tags de backref de/para as notas de rodapé
+  sed -E -z \
+    -e 's;<a[[:space:]\n]+id="LWR-ht-fnbk.([0-9]+|[A-Za-z])-[0-9]+"></a>;;g' \
+    -e 's;<a[[:space:]\n]+href="tese-exemplo.html#LWR-ht-fnbk.([0-9]+|[A-Za-z])-[0-9]+"><sup>[0-9]+</sup></a>&nbsp\;;;g'
+}
+
+unescape_footnote_tags() {
+  # Ao converter o html para markdown, pandoc entende as tags markdown
+  # que criamos acima como texto html normal e, portanto, escapa essas
+  # tags; vamos des-escapar
+  sed -E -z -e 's;\\\[\\\^LWR-ht-fn\.(([0-9]+|[A-Za-z])-[0-9]+)\\\];[^LWR-ht-fn.\1];g'
+}
+
+cat "$1" | markdownify_footnote_tags | erase_footnote_backrefs | pandoc -t markdown -f html | unescape_footnote_tags | pandoc -f markdown -t docx -o "$1.docx"

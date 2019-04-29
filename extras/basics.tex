@@ -45,6 +45,27 @@
 % pdfTeX quanto LuaTeX podem gerar ambos)
 \usepackage{ifpdf}
 
+% lwarp deveria ser carregada depois de fontspec, unicode-math,
+% fontaxes etc. mas não dá: as packages da ams precisam ser
+% carregadas *antes* dessas e lwarp deve ser carregada antes
+% das packages da ams...
+% Como lwarp é um tanto guloso, isto pode ser necessário
+%\usepackage{morewrites}
+%\morewritessetup{allocate=10}
+
+\usepackage[latexmk]{lwarp}
+\booltrue{FormatWP}
+\boolfalse{WPMarkFloats}
+\boolfalse{WPMarkMinipages}
+\boolfalse{WPMarkTOC}
+\booltrue{WPTitleHeading}
+% Adições a lwarp, carregadas imediatamente
+\warpHTMLonly{\input{extras/lwarp-extra-emulations}}
+% Modificações sobre lwarp depois que ela implantou
+% suas próprias modificações a todas as demais packages,
+% carregadas no final do preâmbulo
+\AtBeginDocument{\warpHTMLonly{\input{extras/lwarp-overrides}}}
+
 % Algumas packages "padrão" da AMS, que são praticamente obrigatórias.
 % Algumas delas devem ser carregadas antes de unicode-math ou das
 % definições das fontes do documento.

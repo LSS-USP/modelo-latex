@@ -715,6 +715,8 @@
 
 \ExplSyntaxOn
 \newcounter{@IMEtmpcnt}
+% Start/StopDefiningTabulars are needed by lwarp
+\StartDefiningTabulars
 \newcommand*{\@coverPeople} {%
   \begin{tabular}{rl}
     \iftoggle{@tcc}{}{\programname : & \@program \tabularnewline}
@@ -726,6 +728,7 @@
     }%
   \end{tabular}
 }
+\StopDefiningTabulars
 \ExplSyntaxOff
 
 \newcommand{\@selfReference} {%
